@@ -56,20 +56,37 @@
   height: 96px;
   background-image: url('img/cards.jpg'); /* temp hack to see it */
 }
-/*
-  Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
-
-  .white_token {
-      background-image: url('img/tokens.png');
-      background-position: 0px 0px;
-  }
-  .black_token {
-      background-image: url('img/tokens.png');
-      background-position: -20px 0px;
-  }
-  .token {
-      width: 20px;
-      height: 20px;
-      background-repeat: none;
-  }
-*/
+#playertables {
+  position: relative;
+  width: 710px;
+  height: 340px;
+}
+.playertablename {
+  font-weight: bold;
+}
+.playertable {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  height: 130px;
+}
+.playertable_N {
+  left: 50%;
+  top: 0px;
+  margin-left: -90px; /* half of 180 */
+}
+.playertable_S {
+  left: 50%;
+  bottom: 0px;
+  margin-left: -90px; /* half of 180 */
+}
+.playertable_W {
+  left: 0px;
+  top: 50%;
+  margin-top: -55px; /* half of 130 */
+}
+.playertable_E {
+  right: 0px;
+  top: 50%;
+  margin-top: -55px; /* half of 130 */
+}

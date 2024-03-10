@@ -24,10 +24,10 @@
 
     Please REMOVE this comment before publishing your game on BGA
 -->
-<div>
+<div id="playertables">
   <!-- BEGIN playerhandblock -->
-  <div class="whiteblock">
-    <div style="color:#{PLAYER_COLOR}">
+  <div class="playertable whiteblock playertable_{DIR}">
+    <div class="playertablename" style="color:#{PLAYER_COLOR}">
         {PLAYER_NAME}
     </div>
     <div class="playertablecard" id="playertablecard_{PLAYER_ID}"></div>
