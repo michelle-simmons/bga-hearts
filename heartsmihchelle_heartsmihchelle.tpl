@@ -24,6 +24,16 @@
 
     Please REMOVE this comment before publishing your game on BGA
 -->
+<div>
+  <!-- BEGIN playerhandblock -->
+  <div class="whiteblock">
+    <div style="color:#{PLAYER_COLOR}">
+        {PLAYER_NAME}
+    </div>
+    <div class="playertablecard" id="playertablecard_{PLAYER_ID}"></div>
+  </div>
+  <!-- END playerhandblock -->
+</div>
 
 <div id="myhand_wrap" class="whiteblock">
   <h3>My Hand</h3>

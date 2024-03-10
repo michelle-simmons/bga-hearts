@@ -43,6 +43,20 @@ class view_heartsmihchelle_heartsmihchelle extends game_view
 
     /*********** Place your code below:  ************/
 
+    $template = self::getGameName() . "_" . self::getGameName();
+    $directions = array('S', 'W', 'N', 'E');
+
+    // this will populate our player block with actual player data
+    $this->page->begin_block($template, "playerhandblock");
+    foreach ($players as $player_id => $info) {
+      $dir = array_shift($directions);
+      $this->page->insert_block("playerhandblock", array(
+        "PLAYER_ID" => $player_id,
+        "PLAYER_NAME" => $players[$player_id]['player_name'],
+        "PLAYER_COLOR" => $players[$player_id]['player_color'],
+        "DIR" => $dir
+      ));
+    }
 
     /*
 
