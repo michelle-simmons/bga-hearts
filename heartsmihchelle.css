@@ -48,7 +48,14 @@
 
 /********* You can start writing your CSS below this line: **********/
 
-
+.playertablecard {
+  display: inline-block;
+  position: relative;
+  margin-top: 5px;
+  width: 72px;
+  height: 96px;
+  background-image: url('img/cards.jpg'); /* temp hack to see it */
+}
 /*
   Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
 
