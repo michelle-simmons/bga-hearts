@@ -25,9 +25,11 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-
-This is your game interface. You can edit this HTML in your ".tpl" file. hi!
-
+<div id="myhand_wrap" class="whiteblock">
+  <h3>My Hand</h3>
+    <div id="myhand">
+  </div>
+</div>
 
 <script type="text/javascript">
 
