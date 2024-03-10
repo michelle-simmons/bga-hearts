@@ -1,4 +1,5 @@
 <?php
+
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
@@ -23,64 +24,80 @@
  * Note: if the HTML of your game interface is always the same, you don't have to place anything here.
  *
  */
-  
-require_once( APP_BASE_PATH."view/common/game.view.php" );
-  
+
+require_once(APP_BASE_PATH . "view/common/game.view.php");
+
 class view_heartsmihchelle_heartsmihchelle extends game_view
 {
-    protected function getGameName()
-    {
-        // Used for translations and stuff. Please do not modify.
-        return "heartsmihchelle";
+  protected function getGameName()
+  {
+    // Used for translations and stuff. Please do not modify.
+    return "heartsmihchelle";
+  }
+
+  function build_page($viewArgs)
+  {
+    // Get players & players number
+    $players = $this->game->loadPlayersBasicInfos();
+    $players_nbr = count($players);
+
+    /*********** Place your code below:  ************/
+
+    $template = self::getGameName() . "_" . self::getGameName();
+    $directions = array('S', 'W', 'N', 'E');
+
+    // this will populate our player block with actual player data
+    $this->page->begin_block($template, "playerhandblock");
+    foreach ($players as $player_id => $info) {
+      $dir = array_shift($directions);
+      $this->page->insert_block("playerhandblock", array(
+        "PLAYER_ID" => $player_id,
+        "PLAYER_NAME" => $players[$player_id]['player_name'],
+        "PLAYER_COLOR" => $players[$player_id]['player_color'],
+        "DIR" => $dir
+      ));
     }
-    
-  	function build_page( $viewArgs )
-  	{		
-  	    // Get players & players number
-        $players = $this->game->loadPlayersBasicInfos();
-        $players_nbr = count( $players );
 
-        /*********** Place your code below:  ************/
+    // this will make our 'My Hand' text translatable
+    $this->tpl["MY_HAND"] = self::_("My hand");
+
+    /*
+
+      // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}
+
+      // Display a specific number / string
+      $this->tpl['MY_VARIABLE_ELEMENT'] = $number_to_display;
+
+      // Display a string to be translated in all languages:
+      $this->tpl['MY_VARIABLE_ELEMENT'] = self::_("A string to be translated");
+
+      // Display some HTML content of your own:
+      $this->tpl['MY_VARIABLE_ELEMENT'] = self::raw( $some_html_code );
+    */
+
+    /*
+
+      // Example: display a specific HTML block for each player in this game.
+      // (note: the block is defined in your .tpl file like this:
+      //      <!-- BEGIN myblock -->
+      //          ... my HTML code ...
+      //      <!-- END myblock -->
 
 
-        /*
-        
-        // Examples: set the value of some element defined in your tpl file like this: {MY_VARIABLE_ELEMENT}
+      $this->page->begin_block( "heartsmihchelle_heartsmihchelle", "myblock" );
+      foreach( $players as $player )
+      {
+          $this->page->insert_block( "myblock", array(
+                                                "PLAYER_NAME" => $player['player_name'],
+                                                "SOME_VARIABLE" => $some_value
+                                                ...
+                                                  ) );
+      }
 
-        // Display a specific number / string
-        $this->tpl['MY_VARIABLE_ELEMENT'] = $number_to_display;
-
-        // Display a string to be translated in all languages: 
-        $this->tpl['MY_VARIABLE_ELEMENT'] = self::_("A string to be translated");
-
-        // Display some HTML content of your own:
-        $this->tpl['MY_VARIABLE_ELEMENT'] = self::raw( $some_html_code );
-        
-        */
-        
-        /*
-        
-        // Example: display a specific HTML block for each player in this game.
-        // (note: the block is defined in your .tpl file like this:
-        //      <!-- BEGIN myblock --> 
-        //          ... my HTML code ...
-        //      <!-- END myblock --> 
-        
-
-        $this->page->begin_block( "heartsmihchelle_heartsmihchelle", "myblock" );
-        foreach( $players as $player )
-        {
-            $this->page->insert_block( "myblock", array( 
-                                                    "PLAYER_NAME" => $player['player_name'],
-                                                    "SOME_VARIABLE" => $some_value
-                                                    ...
-                                                     ) );
-        }
-        
-        */
+    */
 
 
 
-        /*********** Do not change anything below this line  ************/
-  	}
+    /*********** Do not change anything below this line  ************/
+  }
 }
