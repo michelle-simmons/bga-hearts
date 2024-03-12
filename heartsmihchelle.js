@@ -18,12 +18,15 @@
 define([
   "dojo", "dojo/_base/declare",
   "ebg/core/gamegui",
-  "ebg/counter"
+  "ebg/counter",
+  "ebg/stock"
 ],
   function (dojo, declare) {
     return declare("bgagame.heartsmihchelle", ebg.core.gamegui, {
       constructor: function () {
         console.log('heartsmihchelle constructor');
+        this.cardwidth = 72;
+        this.cardheight = 96;
 
         // Here, you can init the global variables of your user interface
         // Example:
@@ -56,6 +59,20 @@ define([
 
         // TODO: Set up your game interface here, according to "gamedatas"
 
+        // Player hand
+        this.playerHand = new ebg.stock();
+        dojo.connect(this.playerHand, 'onChangeSelection', this, 'onPlayerHandSelectionChanged');
+        this.playerHand.create(this, $('myhand'), this.cardwidth, this.cardheight);
+        this.playerHand.image_items_per_row = 13; // there are 13 cards per row in our cards.jpg
+
+        // Create cards types:
+        for (var suit = 1; suit <= 4; suit++) { // 1 = spades, 2 = hearts, 3 = clubs, 4 = diamonds
+          for (var value = 2; value <= 14; value++) { // cards start at 2, and increase to Ace (14)
+            // Build card type id
+            var card_type_id = this.getCardUniqueId(suit, value);
+            this.playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+          }
+        }
 
         // Setup game notifications to handle (see "setupNotifications" method below)
         this.setupNotifications();
@@ -149,6 +166,11 @@ define([
 
       */
 
+      // Get card unique identifier based on its suit and value
+      getCardUniqueId : function(suit, value) {
+        return (suit - 1) * 13 + (value - 2);
+      },
+
 
       ///////////////////////////////////////////////////
       //// Player's action
@@ -163,6 +185,23 @@ define([
         _ make a call to the game server
 
       */
+
+      onPlayerHandSelectionChanged: function() {
+        var items = this.playerHand.getSelectedItems();
+
+        if (items.length > 0) {
+          if (this.checkAction('playCard', true)) { // Can play a card
+            var card_id = items[0].id;
+            console.log("playCard triggered for card id " + card_id);
+
+            this.playerHand.unselectAll();
+          } else if (this.checkAction('giveCards')) { // Can give cards
+            // TODO: let the player select some cards
+          } else {
+            this.playerHand.unselectAll();
+          }
+        }
+    },
 
       /* Example:
 
