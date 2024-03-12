@@ -59,6 +59,19 @@ define([
 
         // TODO: Set up your game interface here, according to "gamedatas"
 
+        // Player hand
+        this.playerHand = new ebg.stock();
+        this.playerHand.create(this, $('myhand'), this.cardwidth, this.cardheight);
+        this.playerHand.image_items_per_row = 13; // there are 13 cards per row in our cards.jpg
+
+        // Create cards types:
+        for (var suit = 1; suit <= 4; suit++) { // 1 = spades, 2 = hearts, 3 = clubs, 4 = diamonds
+          for (var value = 2; value <= 14; value++) { // cards start at 2, and increase to Ace (14)
+            // Build card type id
+            var card_type_id = this.getCardUniqueId(suit, value);
+            this.playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+          }
+        }
 
         // Setup game notifications to handle (see "setupNotifications" method below)
         this.setupNotifications();
@@ -152,7 +165,7 @@ define([
 
       */
 
-      // Get card unique identifier based on its color and value
+      // Get card unique identifier based on its suit and value
       getCardUniqueId : function(suit, value) {
         return (suit - 1) * 13 + (value - 2);
       },
