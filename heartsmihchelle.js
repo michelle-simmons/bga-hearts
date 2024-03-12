@@ -152,6 +152,11 @@ define([
 
       */
 
+      // Get card unique identifier based on its color and value
+      getCardUniqueId : function(suit, value) {
+        return (suit - 1) * 13 + (value - 2);
+      },
+
 
       ///////////////////////////////////////////////////
       //// Player's action
