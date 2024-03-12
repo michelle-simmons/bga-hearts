@@ -61,6 +61,7 @@ define([
 
         // Player hand
         this.playerHand = new ebg.stock();
+        dojo.connect(this.playerHand, 'onChangeSelection', this, 'onPlayerHandSelectionChanged');
         this.playerHand.create(this, $('myhand'), this.cardwidth, this.cardheight);
         this.playerHand.image_items_per_row = 13; // there are 13 cards per row in our cards.jpg
 
