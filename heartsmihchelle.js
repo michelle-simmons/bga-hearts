@@ -25,6 +25,8 @@ define([
     return declare("bgagame.heartsmihchelle", ebg.core.gamegui, {
       constructor: function () {
         console.log('heartsmihchelle constructor');
+        this.cardwidth = 72;
+        this.cardheight = 96;
 
         // Here, you can init the global variables of your user interface
         // Example:
