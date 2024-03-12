@@ -192,7 +192,7 @@ define([
         if (items.length > 0) {
           if (this.checkAction('playCard', true)) { // Can play a card
             var card_id = items[0].id;
-            console.log("on playCard " + card_id);
+            console.log("playCard triggered for card id " + card_id);
 
             this.playerHand.unselectAll();
           } else if (this.checkAction('giveCards')) { // Can give cards
