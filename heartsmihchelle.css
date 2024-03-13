@@ -90,3 +90,9 @@
   top: 50%;
   margin-top: -55px; /* half of 130 */
 }
+.cardontable {
+  position: absolute;
+  width: 72px;
+  height: 96px;
+  background-image: url('img/cards.jpg');
+}
