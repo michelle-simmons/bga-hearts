@@ -235,7 +235,11 @@ define([
         if (items.length > 0) {
           if (this.checkAction('playCard', true)) { // Can play a card
             var card_id = items[0].id;
-            console.log("playCard triggered for card id " + card_id);
+            var type = items[0].type; // type is (suit - 1) * 13 + (value - 2)
+            var suit = Math.floor(type / 13) + 1;
+            var value = type % 13 + 2;
+
+            this.playCardOnTable(this.player_id, suit, value, card_id);
 
             this.playerHand.unselectAll();
           } else if (this.checkAction('giveCards')) { // Can give cards
