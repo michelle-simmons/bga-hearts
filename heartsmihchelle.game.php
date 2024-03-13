@@ -99,6 +99,13 @@ class heartsmihchelle extends Table
 
     $this->cards->createCards( $cards, 'deck' );
 
+    // Shuffle deck
+    $this->cards->shuffle('deck');
+    // Deal 13 cards to each players
+    $players = self::loadPlayersBasicInfos();
+    foreach ($players as $player_id => $player) {
+      $cards = $this->cards->pickCards(13, 'deck', $player_id);
+    }
 
     // Init game statistics
     // (note: statistics used in this file must be defined in your stats.inc.php file)
