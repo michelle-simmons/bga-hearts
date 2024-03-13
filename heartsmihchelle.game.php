@@ -78,7 +78,16 @@ class heartsmihchelle extends Table
     /************ Start the game initialization *****/
 
     // Init global values with their initial values
-    //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
+
+    // Note: hand types: 0 = give 3 cards to player on the left
+    //                   1 = give 3 cards to player on the right
+    //                   2 = give 3 cards to player opposite
+    //                   3 = keep cards
+    self::setGameStateInitialValue('currentHandType', 0);
+    // Set current trick suit to zero (= no trick suit)
+    self::setGameStateInitialValue('trickSuit', 0);
+    // Mark if we already played hearts during this hand
+    self::setGameStateInitialValue('heartsBroken', 0);
 
     // Init game statistics
     // (note: statistics used in this file must be defined in your stats.inc.php file)
