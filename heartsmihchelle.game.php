@@ -37,8 +37,8 @@ class heartsmihchelle extends Table
       "heartsBroken" => 12,
     ));
 
-    $this->cards = self::getNew( "module.common.deck" ); // create 'cards' object
-    $this->cards->init( "card" ); // associate the cards object with the card table in the database
+    $this->cards = self::getNew("module.common.deck"); // create 'cards' object
+    $this->cards->init("card"); // associate the cards object with the card table in the database
   }
 
   protected function getGameName()
@@ -90,14 +90,14 @@ class heartsmihchelle extends Table
     self::setGameStateInitialValue('heartsBroken', 0);
 
     // Create cards
-    $cards = array ();
+    $cards = array();
     foreach ($this->suits as $suit_id => $suit) {
-      for ($value = 2; $value <= 14; $value ++) {
-        $cards [] = array('type' => $suit_id,'type_arg' => $value,'nbr' => 1);
+      for ($value = 2; $value <= 14; $value++) {
+        $cards[] = array('type' => $suit_id, 'type_arg' => $value, 'nbr' => 1);
       }
     }
 
-    $this->cards->createCards( $cards, 'deck' );
+    $this->cards->createCards($cards, 'deck');
 
     // Shuffle deck
     $this->cards->shuffle('deck');
@@ -186,30 +186,12 @@ class heartsmihchelle extends Table
     (note: each method below must match an input method in heartsmihchelle.action.php)
   */
 
-  /*
-
-    Example:
-
-    function playCard( $card_id )
-    {
-      // Check that this is the player's turn and that it is a "possible action" at this game state (see states.inc.php)
-      self::checkAction( 'playCard' );
-
-      $player_id = self::getActivePlayerId();
-
-      // Add your game logic to play a card there
-      ...
-
-      // Notify all players about the card played
-      self::notifyAllPlayers( "cardPlayed", clienttranslate( '${player_name} plays ${card_name}' ), array(
-          'player_id' => $player_id,
-          'player_name' => self::getActivePlayerName(),
-          'card_name' => $card_name,
-          'card_id' => $card_id
-      ) );
-    }
-
-    */
+  function playCard($card_id)
+  {
+    self::checkAction("playCard");
+    $player_id = self::getActivePlayerId();
+    throw new BgaUserException(self::_("Not implemented: ") . "$player_id plays $card_id");
+  }
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -222,22 +204,11 @@ class heartsmihchelle extends Table
     game state.
   */
 
-  /*
+  function argGiveCards()
+  {
+    return array();
+  }
 
-    Example for game state "MyGameState":
-
-    function argMyGameState()
-    {
-      // Get some values from the current game situation in database...
-
-      // return values:
-      return array(
-        'variable1' => $value1,
-        'variable2' => $value2,
-        ...
-      );
-    }
-    */
 
   //////////////////////////////////////////////////////////////////////////////
   //////////// Game state actions
@@ -248,18 +219,60 @@ class heartsmihchelle extends Table
     The action method of state X is called everytime the current game state is set to X.
   */
 
-  /*
-
-    Example for game state "MyGameState":
-
-    function stMyGameState()
-    {
-      // Do some stuff ...
-
-      // (very often) go to another gamestate
-      $this->gamestate->nextState( 'some_gamestate_transition' );
+  function stNewHand()
+  {
+    // Take back all cards (from any location => null) to deck
+    $this->cards->moveAllCardsInLocation(null, "deck");
+    $this->cards->shuffle('deck');
+    // Deal 13 cards to each players
+    // Create deck, shuffle it and give 13 initial cards
+    $players = self::loadPlayersBasicInfos();
+    foreach ($players as $player_id => $player) {
+      $cards = $this->cards->pickCards(13, 'deck', $player_id);
+      // Notify player about his cards
+      self::notifyPlayer($player_id, 'newHand', '', array('cards' => $cards));
     }
-    */
+    self::setGameStateValue('heartsBroken', 0);
+    $this->gamestate->nextState("");
+  }
+
+  function stNewTrick()
+  {
+    // New trick: active the player who wins the last trick, or the player who own the club-2 card
+    // Reset trick suit to 0 (= no suit)
+    self::setGameStateInitialValue('trickSuit', 0);
+    $this->gamestate->nextState("");
+  }
+
+  function stNextPlayer()
+  {
+    // Active next player OR end the trick and go to the next trick OR end the hand
+    if ($this->cards->countCardInLocation('cardsontable') == 4) {
+      // This is the end of the trick
+      // Move all cards to "cardswon" of the given player
+      $best_value_player_id = self::activeNextPlayer(); // TODO figure out winner of trick
+      $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $best_value_player_id);
+
+      if ($this->cards->countCardInLocation('hand') == 0) {
+        // End of the hand
+        $this->gamestate->nextState("endHand");
+      } else {
+        // End of the trick
+        $this->gamestate->nextState("nextTrick");
+      }
+    } else {
+      // Standard case (not the end of the trick)
+      // => just active the next player
+      $player_id = self::activeNextPlayer();
+      self::giveExtraTime($player_id);
+      $this->gamestate->nextState('nextPlayer');
+    }
+  }
+
+  function stEndHand()
+  {
+    $this->gamestate->nextState("nextHand");
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   //////////// Zombie
