@@ -190,7 +190,22 @@ class heartsmihchelle extends Table
   {
     self::checkAction("playCard");
     $player_id = self::getActivePlayerId();
-    throw new BgaUserException(self::_("Not implemented: ") . "$player_id plays $card_id");
+    $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+    // XXX check rules here
+    $currentCard = $this->cards->getCard($card_id);
+    // And notify
+    self::notifyAllPlayers(
+      'playCard',
+      clienttranslate('${player_name} plays ${value_displayed} ${suit_displayed}'),
+      array(
+        'i18n' => array('suit_displayed', 'value_displayed'), 'card_id' => $card_id, 'player_id' => $player_id,
+        'player_name' => self::getActivePlayerName(), 'value' => $currentCard['type_arg'],
+        'value_displayed' => $this->values_label[$currentCard['type_arg']], 'suit' => $currentCard['type'],
+        'suit_displayed' => $this->suits[$currentCard['type']]['name']
+      )
+    );
+    // Next player
+    $this->gamestate->nextState('playCard');
   }
 
 
