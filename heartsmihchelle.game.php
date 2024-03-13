@@ -32,13 +32,13 @@ class heartsmihchelle extends Table
     parent::__construct();
 
     self::initGameStateLabels(array(
-      //    "my_first_global_variable" => 10,
-      //    "my_second_global_variable" => 11,
-      //      ...
-      //    "my_first_game_variant" => 100,
-      //    "my_second_game_variant" => 101,
-      //      ...
+      "currentHandType" => 10, // vars are integers in the database; values lower than 10 are reserved
+      "trickSuit" => 11, // in PHP, we'll associate thse variables with strings
+      "heartsBroken" => 12,
     ));
+
+    $this->cards = self::getNew( "module.common.deck" ); // create 'cards' object
+    $this->cards->init( "card" ); // associate the cards object with the card table in the database
   }
 
   protected function getGameName()
@@ -78,7 +78,27 @@ class heartsmihchelle extends Table
     /************ Start the game initialization *****/
 
     // Init global values with their initial values
-    //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
+
+    // Note: hand types: 0 = give 3 cards to player on the left
+    //                   1 = give 3 cards to player on the right
+    //                   2 = give 3 cards to player opposite
+    //                   3 = keep cards
+    self::setGameStateInitialValue('currentHandType', 0);
+    // Set current trick suit to zero (= no trick suit)
+    self::setGameStateInitialValue('trickSuit', 0);
+    // Mark if we already played hearts during this hand
+    self::setGameStateInitialValue('heartsBroken', 0);
+
+    // Create cards
+    $cards = array ();
+    foreach ($this->suits as $suit_id => $suit) {
+      for ($value = 2; $value <= 14; $value ++) {
+        $cards [] = array('type' => $suit_id,'type_arg' => $value,'nbr' => 1);
+      }
+    }
+
+    $this->cards->createCards( $cards, 'deck' );
+
 
     // Init game statistics
     // (note: statistics used in this file must be defined in your stats.inc.php file)
