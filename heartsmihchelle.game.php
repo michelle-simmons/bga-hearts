@@ -37,8 +37,8 @@ class heartsmihchelle extends Table
       "heartsBroken" => 12,
     ));
 
-    $this->cards = self::getNew( "module.common.deck" ); // create 'cards' object
-    $this->cards->init( "card" ); // associate the cards object with the card table in the database
+    $this->cards = self::getNew("module.common.deck"); // create 'cards' object
+    $this->cards->init("card"); // associate the cards object with the card table in the database
   }
 
   protected function getGameName()
@@ -90,14 +90,14 @@ class heartsmihchelle extends Table
     self::setGameStateInitialValue('heartsBroken', 0);
 
     // Create cards
-    $cards = array ();
+    $cards = array();
     foreach ($this->suits as $suit_id => $suit) {
-      for ($value = 2; $value <= 14; $value ++) {
-        $cards [] = array('type' => $suit_id,'type_arg' => $value,'nbr' => 1);
+      for ($value = 2; $value <= 14; $value++) {
+        $cards[] = array('type' => $suit_id, 'type_arg' => $value, 'nbr' => 1);
       }
     }
 
-    $this->cards->createCards( $cards, 'deck' );
+    $this->cards->createCards($cards, 'deck');
 
     // Shuffle deck
     $this->cards->shuffle('deck');
@@ -186,7 +186,8 @@ class heartsmihchelle extends Table
     (note: each method below must match an input method in heartsmihchelle.action.php)
   */
 
-  function playCard($card_id) {
+  function playCard($card_id)
+  {
     self::checkAction("playCard");
     $player_id = self::getActivePlayerId();
     throw new BgaUserException(self::_("Not implemented: ") . "$player_id plays $card_id");
