@@ -290,7 +290,7 @@ define([
 
       notif_playCard: function (notif) {
         // Play a card on the table
-        this.playCardOnTable(notif.args.player_id, notif.args.color, notif.args.value, notif.args.card_id);
+        this.playCardOnTable(notif.args.player_id, notif.args.suit, notif.args.value, notif.args.card_id);
       },
 
       notif_trickWin: function (notif) {
