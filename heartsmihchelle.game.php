@@ -32,12 +32,9 @@ class heartsmihchelle extends Table
     parent::__construct();
 
     self::initGameStateLabels(array(
-      //    "my_first_global_variable" => 10,
-      //    "my_second_global_variable" => 11,
-      //      ...
-      //    "my_first_game_variant" => 100,
-      //    "my_second_game_variant" => 101,
-      //      ...
+      "currentHandType" => 10, // vars are integers in the database; values lower than 10 are reserved
+      "trickSuit" => 11, // in PHP, we'll associate thse variables with strings
+      "heartsBroken" => 12,
     ));
   }
 
