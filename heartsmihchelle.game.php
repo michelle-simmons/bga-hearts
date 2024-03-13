@@ -89,6 +89,17 @@ class heartsmihchelle extends Table
     // Mark if we already played hearts during this hand
     self::setGameStateInitialValue('heartsBroken', 0);
 
+    // Create cards
+    $cards = array ();
+    foreach ($this->suits as $suit_id => $suit) {
+      for ($value = 2; $value <= 14; $value ++) {
+        $cards [] = array('type' => $suit_id,'type_arg' => $value,'nbr' => 1);
+      }
+    }
+
+    $this->cards->createCards( $cards, 'deck' );
+
+
     // Init game statistics
     // (note: statistics used in this file must be defined in your stats.inc.php file)
     //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
