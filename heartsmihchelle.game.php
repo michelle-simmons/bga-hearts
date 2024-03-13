@@ -134,7 +134,10 @@ class heartsmihchelle extends Table
     $sql = "SELECT player_id id, player_score score FROM player ";
     $result['players'] = self::getCollectionFromDb($sql);
 
-    // TODO: Gather all information about current game situation (visible by player $current_player_id).
+    // Cards in player hand
+    $result['hand'] = $this->cards->getCardsInLocation('hand', $current_player_id);
+    // Cards played on the table
+    $result['cardsontable'] = $this->cards->getCardsInLocation('cardsontable');
 
     return $result;
   }
