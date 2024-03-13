@@ -280,6 +280,11 @@ class heartsmihchelle extends Table
     }
   }
 
+  function stEndHand()
+  {
+    $this->gamestate->nextState("nextHand");
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   //////////// Zombie
   ////////////
