@@ -204,22 +204,11 @@ class heartsmihchelle extends Table
     game state.
   */
 
-  /*
+  function argGiveCards()
+  {
+    return array();
+  }
 
-    Example for game state "MyGameState":
-
-    function argMyGameState()
-    {
-      // Get some values from the current game situation in database...
-
-      // return values:
-      return array(
-        'variable1' => $value1,
-        'variable2' => $value2,
-        ...
-      );
-    }
-    */
 
   //////////////////////////////////////////////////////////////////////////////
   //////////// Game state actions
