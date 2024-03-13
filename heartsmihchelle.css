@@ -54,7 +54,6 @@
   margin-top: 5px;
   width: 72px;
   height: 96px;
-  background-image: url('img/cards.jpg'); /* temp hack to see it */
 }
 #playertables {
   position: relative;
@@ -89,4 +88,10 @@
   right: 0px;
   top: 50%;
   margin-top: -55px; /* half of 130 */
+}
+.cardontable {
+  position: absolute;
+  width: 72px;
+  height: 96px;
+  background-image: url('img/cards.jpg');
 }
