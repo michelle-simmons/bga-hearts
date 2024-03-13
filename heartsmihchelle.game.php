@@ -190,9 +190,15 @@ class heartsmihchelle extends Table
   {
     self::checkAction("playCard");
     $player_id = self::getActivePlayerId();
+
     $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     // XXX check rules here
     $currentCard = $this->cards->getCard($card_id);
+
+    $currentTrickSuit = self::getGameStateValue('trickSuit');
+    if ($currentTrickSuit == 0)
+      self::setGameStateValue('trickSuit', $currentCard['type']);
+
     // And notify
     self::notifyAllPlayers(
       'playCard',
