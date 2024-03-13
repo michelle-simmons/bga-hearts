@@ -167,8 +167,34 @@ define([
       */
 
       // Get card unique identifier based on its suit and value
-      getCardUniqueId : function(suit, value) {
+      getCardUniqueId: function (suit, value) {
         return (suit - 1) * 13 + (value - 2);
+      },
+
+      playCardOnTable: function (player_id, suit, value, card_id) {
+        // player_id => direction
+        dojo.place(this.format_block('jstpl_cardontable', {
+          x: this.cardwidth * (value - 2),
+          y: this.cardheight * (suit - 1),
+          player_id: player_id
+        }), 'playertablecard_' + player_id);
+
+        if (player_id != this.player_id) {
+          // Some opponent played a card
+          // Move card from player panel
+          this.placeOnObject('cardontable_' + player_id, 'overall_player_board_' + player_id);
+        } else {
+          // You played a card. If it exists in your hand, move card from there and remove
+          // corresponding item
+
+          if ($('myhand_item_' + card_id)) {
+            this.placeOnObject('cardontable_' + player_id, 'myhand_item_' + card_id);
+            this.playerHand.removeFromStockById(card_id);
+          }
+        }
+
+        // In any case: move it to its final destination
+        this.slideToObject('cardontable_' + player_id, 'playertablecard_' + player_id).play();
       },
 
 
@@ -186,7 +212,7 @@ define([
 
       */
 
-      onPlayerHandSelectionChanged: function() {
+      onPlayerHandSelectionChanged: function () {
         var items = this.playerHand.getSelectedItems();
 
         if (items.length > 0) {
@@ -201,7 +227,7 @@ define([
             this.playerHand.unselectAll();
           }
         }
-    },
+      },
 
       /* Example:
 
