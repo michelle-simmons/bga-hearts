@@ -36,6 +36,9 @@ class heartsmihchelle extends Table
       "trickSuit" => 11, // in PHP, we'll associate thse variables with strings
       "heartsBroken" => 12,
     ));
+
+    $this->cards = self::getNew( "module.common.deck" ); // create 'cards' object
+    $this->cards->init( "card" ); // associate the cards object with the card table in the database
   }
 
   protected function getGameName()
