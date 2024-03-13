@@ -247,6 +247,14 @@ class heartsmihchelle extends Table
     $this->gamestate->nextState("");
   }
 
+  function stNewTrick()
+  {
+    // New trick: active the player who wins the last trick, or the player who own the club-2 card
+    // Reset trick suit to 0 (= no suit)
+    self::setGameStateInitialValue('trickSuit', 0);
+    $this->gamestate->nextState("");
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   //////////// Zombie
   ////////////
