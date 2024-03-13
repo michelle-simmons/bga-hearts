@@ -230,18 +230,22 @@ class heartsmihchelle extends Table
     The action method of state X is called everytime the current game state is set to X.
   */
 
-  /*
-
-    Example for game state "MyGameState":
-
-    function stMyGameState()
-    {
-      // Do some stuff ...
-
-      // (very often) go to another gamestate
-      $this->gamestate->nextState( 'some_gamestate_transition' );
+  function stNewHand()
+  {
+    // Take back all cards (from any location => null) to deck
+    $this->cards->moveAllCardsInLocation(null, "deck");
+    $this->cards->shuffle('deck');
+    // Deal 13 cards to each players
+    // Create deck, shuffle it and give 13 initial cards
+    $players = self::loadPlayersBasicInfos();
+    foreach ($players as $player_id => $player) {
+      $cards = $this->cards->pickCards(13, 'deck', $player_id);
+      // Notify player about his cards
+      self::notifyPlayer($player_id, 'newHand', '', array('cards' => $cards));
     }
-    */
+    self::setGameStateValue('heartsBroken', 0);
+    $this->gamestate->nextState("");
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   //////////// Zombie
