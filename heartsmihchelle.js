@@ -269,34 +269,25 @@ define([
       setupNotifications: function () {
         console.log('notifications subscriptions setup');
 
-        // TODO: here, associate your game notifications with local methods
-
-        // Example 1: standard notification handling
-        // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-
-        // Example 2: standard notification handling + tell the user interface to wait
-        //            during 3 seconds after calling the method in order to let the players
-        //            see what is happening in the game.
-        // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-        // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-        //
+        dojo.subscribe('newHand', this, "notif_newHand");
+        dojo.subscribe('playCard', this, "notif_playCard");
       },
 
-      // TODO: from this point and below, you can write your game notifications handling methods
+      notif_newHand: function (notif) {
+        // We received a new full hand of 13 cards.
+        this.playerHand.removeAll();
 
-      /*
-      Example:
-
-      notif_cardPlayed: function( notif )
-      {
-        console.log( 'notif_cardPlayed' );
-        console.log( notif );
-
-        // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
-
-        // TODO: play the card in the user interface.
+        for (var i in notif.args.cards) {
+          var card = notif.args.cards[i];
+          var suit = card.type;
+          var value = card.type_arg;
+          this.playerHand.addToStockWithId(this.getCardUniqueId(suit, value), card.id);
+        }
       },
 
-      */
+      notif_playCard: function (notif) {
+        // Play a card on the table
+        this.playCardOnTable(notif.args.player_id, notif.args.color, notif.args.value, notif.args.card_id);
+      },
     });
   });
