@@ -233,56 +233,26 @@ define([
         var items = this.playerHand.getSelectedItems();
 
         if (items.length > 0) {
-          if (this.checkAction('playCard', true)) { // Can play a card
+          var action = 'playCard';
+          if (this.checkAction(action, true)) {
+            // Can play a card
             var card_id = items[0].id;
-            var type = items[0].type; // type is (suit - 1) * 13 + (value - 2)
-            var suit = Math.floor(type / 13) + 1;
-            var value = type % 13 + 2;
-
-            this.playCardOnTable(this.player_id, suit, value, card_id);
+            this.ajaxcall(
+              "/" + this.game_name + "/" + this.game_name + "/" + action + ".html",
+              { id: card_id, lock: true },
+              this,
+              function (result) { },
+              function (is_error) { }
+            );
 
             this.playerHand.unselectAll();
-          } else if (this.checkAction('giveCards')) { // Can give cards
-            // TODO: let the player select some cards
+          } else if (this.checkAction('giveCards')) {
+            // Can give cards => let the player select some cards
           } else {
             this.playerHand.unselectAll();
           }
         }
       },
-
-      /* Example:
-
-      onMyMethodToCall1: function( evt )
-    {
-        console.log( 'onMyMethodToCall1' );
-
-        // Preventing default browser reaction
-        dojo.stopEvent( evt );
-
-        // Check that this action is possible (see "possibleactions" in states.inc.php)
-        if( ! this.checkAction( 'myAction' ) )
-        {   return; }
-
-        this.ajaxcall( "/heartsmihchelle/heartsmihchelle/myAction.html", {
-                                                                lock: true,
-                                                                myArgument1: arg1,
-                                                                myArgument2: arg2,
-                                                                ...
-                                                              },
-                      this, function( result ) {
-
-                        // What to do after the server call if it succeeded
-                        // (most of the time: nothing)
-
-                      }, function( is_error) {
-
-                        // What to do after the server call in anyway (success or failure)
-                        // (most of the time: nothing)
-
-                      } );
-      },
-
-      */
 
 
       ///////////////////////////////////////////////////
