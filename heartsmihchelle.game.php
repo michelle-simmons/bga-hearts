@@ -284,6 +284,7 @@ class heartsmihchelle extends Table
         }
       }
 
+      $this->gamestate->changeActivePlayer($trickWinnerId);
       $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $trickWinnerId);
       // Notify
       // Note: we use 2 notifications here in order we can pause the display during the first notification
