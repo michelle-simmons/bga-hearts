@@ -273,6 +273,8 @@ class heartsmihchelle extends Table
       // Move all cards to "cardswon" of the given player
       $currentTrickSuit = self::getGameStateValue('trickSuit');
       $currentTrickCards = $this->cards->getCardsInLocation('cardsontable');
+      // $value = var_export($currentTrickCards, true);
+      // throw new BgaUserException('current trick cards: '.$value);
       $highestValueInSuit = null;
       $trickWinnerId = null;
       foreach ($currentTrickCards as $card) {
