@@ -271,18 +271,30 @@ class heartsmihchelle extends Table
     if ($this->cards->countCardInLocation('cardsontable') == 4) {
       // This is the end of the trick
       // Move all cards to "cardswon" of the given player
-      $best_value_player_id = self::activeNextPlayer(); // TODO figure out winner of trick
-      $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $best_value_player_id);
+      $currentTrickSuit = self::getGameStateValue('trickSuit');
+      $currentTrickCards = $this->cards->getCardsInLocation('cardsontable');
+      $highestValueInSuit = null;
+      $trickWinnerId = null;
+      foreach ($currentTrickCards as $card) {
+        if ($card['type'] == $currentTrickSuit) {
+          if ($card['type_arg'] > $highestValueInSuit) {
+            $highestValueInSuit = $card['type_arg'];
+            $trickWinnerId = $card['location_arg'];
+          }
+        }
+      }
+
+      $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $trickWinnerId);
       // Notify
       // Note: we use 2 notifications here in order we can pause the display during the first notification
       //  before we move all cards to the winner (during the second notification)
       $players = self::loadPlayersBasicInfos();
       self::notifyAllPlayers('trickWin', clienttranslate('${player_name} wins the trick'), array(
-        'player_id' => $best_value_player_id,
-        'player_name' => $players[$best_value_player_id]['player_name']
+        'player_id' => $trickWinnerId,
+        'player_name' => $players[$trickWinnerId]['player_name']
       ));
       self::notifyAllPlayers('giveAllCardsToPlayer', '', array(
-        'player_id' => $best_value_player_id
+        'player_id' => $trickWinnerId
       ));
 
       if ($this->cards->countCardInLocation('hand') == 0) {
