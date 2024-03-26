@@ -175,6 +175,18 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
+  function playerHasNoCardsInTrickSuit($player_id, $trickSuit)
+  {
+    $hand = $this->cards->getCardsInLocation('hand', $player_id);
+
+    foreach ($hand as $card) {
+      if ($card['type'] == $trickSuit) {
+        return false;
+      }
+      return true;
+    }
+  }
+
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -190,9 +202,23 @@ class heartsmihchelle extends Table
   {
     self::checkAction("playCard");
     $player_id = self::getActivePlayerId();
-    $this->cards->moveCard($card_id, 'cardsontable', $player_id);
-    // XXX check rules here
+
+    $currentTrickSuit = self::getGameStateValue('trickSuit');
     $currentCard = $this->cards->getCard($card_id);
+
+    if ($currentTrickSuit == 0) {
+      self::setGameStateValue('trickSuit', $currentCard['type']);
+      $currentTrickSuit = $currentCard['type'];
+    }
+
+    if ($currentTrickSuit == $currentCard['type']) {
+      $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+    // } elseif (playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
+    //   $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+    } else {
+      throw new BgaUserException('must play in suit!');
+    }
+
     // And notify
     self::notifyAllPlayers(
       'playCard',
@@ -265,18 +291,31 @@ class heartsmihchelle extends Table
     if ($this->cards->countCardInLocation('cardsontable') == 4) {
       // This is the end of the trick
       // Move all cards to "cardswon" of the given player
-      $best_value_player_id = self::activeNextPlayer(); // TODO figure out winner of trick
-      $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $best_value_player_id);
+      $currentTrickSuit = self::getGameStateValue('trickSuit');
+      $currentTrickCards = $this->cards->getCardsInLocation('cardsontable');
+      $highestValueInSuit = null;
+      $trickWinnerId = null;
+      foreach ($currentTrickCards as $card) {
+        if ($card['type'] == $currentTrickSuit) {
+          if ($card['type_arg'] > $highestValueInSuit) {
+            $highestValueInSuit = $card['type_arg'];
+            $trickWinnerId = $card['location_arg'];
+          }
+        }
+      }
+
+      $this->gamestate->changeActivePlayer($trickWinnerId);
+      $this->cards->moveAllCardsInLocation('cardsontable', 'cardswon', null, $trickWinnerId);
       // Notify
       // Note: we use 2 notifications here in order we can pause the display during the first notification
       //  before we move all cards to the winner (during the second notification)
       $players = self::loadPlayersBasicInfos();
       self::notifyAllPlayers('trickWin', clienttranslate('${player_name} wins the trick'), array(
-        'player_id' => $best_value_player_id,
-        'player_name' => $players[$best_value_player_id]['player_name']
+        'player_id' => $trickWinnerId,
+        'player_name' => $players[$trickWinnerId]['player_name']
       ));
       self::notifyAllPlayers('giveAllCardsToPlayer', '', array(
-        'player_id' => $best_value_player_id
+        'player_id' => $trickWinnerId
       ));
 
       if ($this->cards->countCardInLocation('hand') == 0) {
