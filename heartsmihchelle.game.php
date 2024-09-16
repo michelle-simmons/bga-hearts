@@ -226,8 +226,8 @@ class heartsmihchelle extends Table
 
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
-    // } elseif (playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
-    //   $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+      // } elseif (playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
+      //   $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
     }
@@ -237,9 +237,13 @@ class heartsmihchelle extends Table
       'playCard',
       clienttranslate('${player_name} plays ${value_displayed} ${suit_displayed}'),
       array(
-        'i18n' => array('suit_displayed', 'value_displayed'), 'card_id' => $card_id, 'player_id' => $player_id,
-        'player_name' => self::getActivePlayerName(), 'value' => $currentCard['type_arg'],
-        'value_displayed' => $this->values_label[$currentCard['type_arg']], 'suit' => $currentCard['type'],
+        'i18n' => array('suit_displayed', 'value_displayed'),
+        'card_id' => $card_id,
+        'player_id' => $player_id,
+        'player_name' => self::getActivePlayerName(),
+        'value' => $currentCard['type_arg'],
+        'value_displayed' => $this->values_label[$currentCard['type_arg']],
+        'suit' => $currentCard['type'],
         'suit_displayed' => $this->suits[$currentCard['type']]['name']
       )
     );
