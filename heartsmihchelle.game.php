@@ -226,8 +226,8 @@ class heartsmihchelle extends Table
 
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
-      // } elseif (playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
-      //   $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+    } elseif ($this->playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
+      $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
     }
