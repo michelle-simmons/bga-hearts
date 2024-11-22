@@ -230,7 +230,7 @@ class heartsmihchelle extends Table
     $currentTrickSuit = self::getGameStateValue('trickSuit');
     $currentCard = $this->cards->getCard($card_id);
 
-    if ($currentTrickSuit == 0) { // first hand
+    if ($currentTrickSuit == 0) { // first card of trick
       if ($currentCard['type'] == 2 && !$this->playerHasOnlyHearts($player_id) && !self::getGameStateValue('heartsBroken')) {
         throw new BgaUserException('cannot lead hearts!');
       }
