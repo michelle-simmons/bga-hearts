@@ -188,7 +188,7 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
-  function playerHasNoCardsInTrickSuit($player_id, $trickSuit)
+  function playerCanSlough($player_id, $trickSuit)
   {
     $hand = $this->cards->getCardsInLocation('hand', $player_id);
 
@@ -196,10 +196,9 @@ class heartsmihchelle extends Table
       if ($card['type'] == $trickSuit) {
         return false;
       }
-      return true;
     }
+    return true;
   }
-
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -219,15 +218,18 @@ class heartsmihchelle extends Table
     $currentTrickSuit = self::getGameStateValue('trickSuit');
     $currentCard = $this->cards->getCard($card_id);
 
-    if ($currentTrickSuit == 0) {
+    if ($currentTrickSuit == 0) { // first hand
+      if ($currentCard['type'] == 2) { // card is a heart
+        throw new BgaUserException('cannot lead hearts!');
+      }
       self::setGameStateValue('trickSuit', $currentCard['type']);
       $currentTrickSuit = $currentCard['type'];
     }
 
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
-      // } elseif (playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
-      //   $this->cards->moveCard($card_id, 'cardsontable', $player_id);
+    } elseif ($this->playerCanSlough($player_id, $currentTrickSuit)) {
+      $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
     }
