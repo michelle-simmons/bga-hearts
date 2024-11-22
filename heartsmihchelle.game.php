@@ -231,7 +231,7 @@ class heartsmihchelle extends Table
     $currentCard = $this->cards->getCard($card_id);
 
     if ($currentTrickSuit == 0) { // first hand
-      if ($currentCard['type'] == 2 && !$this->playerHasOnlyHearts($player_id)) { // card is a heart
+      if ($currentCard['type'] == 2 && !$this->playerHasOnlyHearts($player_id) && !self::getGameStateValue('heartsBroken')) {
         throw new BgaUserException('cannot lead hearts!');
       }
       self::setGameStateValue('trickSuit', $currentCard['type']);
@@ -241,6 +241,10 @@ class heartsmihchelle extends Table
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } elseif ($this->playerCanSlough($player_id, $currentTrickSuit)) {
+      if ($currentCard['type'] == 2) {
+        self::setGameStateValue('heartsBroken', 1);
+      }
+
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
