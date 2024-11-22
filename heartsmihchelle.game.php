@@ -200,6 +200,18 @@ class heartsmihchelle extends Table
     return true;
   }
 
+  function playerHasOnlyHearts($player_id)
+  {
+    $hand = $this->cards->getCardsInLocation('hand', $player_id);
+
+    foreach ($hand as $card) {
+      if ($card['type'] != 2) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   //////////////////////////////////////////////////////////////////////////////
   //////////// Player actions
@@ -219,7 +231,7 @@ class heartsmihchelle extends Table
     $currentCard = $this->cards->getCard($card_id);
 
     if ($currentTrickSuit == 0) { // first hand
-      if ($currentCard['type'] == 2) { // card is a heart
+      if ($currentCard['type'] == 2 && !$this->playerHasOnlyHearts($player_id)) { // card is a heart
         throw new BgaUserException('cannot lead hearts!');
       }
       self::setGameStateValue('trickSuit', $currentCard['type']);
