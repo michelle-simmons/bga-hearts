@@ -188,7 +188,7 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
-  function playerHasNoCardsInTrickSuit($player_id, $trickSuit)
+  function playerCanSlough($player_id, $trickSuit)
   {
     $hand = $this->cards->getCardsInLocation('hand', $player_id);
 
@@ -196,10 +196,9 @@ class heartsmihchelle extends Table
       if ($card['type'] == $trickSuit) {
         return false;
       }
-      return true;
     }
+    return true;
   }
-
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -229,7 +228,7 @@ class heartsmihchelle extends Table
 
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
-    } elseif ($this->playerHasNoCardsInTrickSuit($player_id, $currentTrickSuit)) {
+    } elseif ($this->playerCanSlough($player_id, $currentTrickSuit)) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
