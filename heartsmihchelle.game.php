@@ -97,9 +97,7 @@ class heartsmihchelle extends Table
     //                   2 = give 3 cards to player opposite
     //                   3 = keep cards
     self::setGameStateInitialValue('currentHandType', 0);
-    // Set current trick suit to zero (= no trick suit)
     self::setGameStateInitialValue('trickSuit', 0);
-    // Mark if we already played hearts during this hand
     self::setGameStateInitialValue('heartsBroken', 0);
 
     // Create cards
