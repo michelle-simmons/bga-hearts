@@ -186,6 +186,18 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
+  function clubsOwnerId($players)
+  {
+    foreach ($players as $player_id => $player) {
+      $hand = $this->cards->getCardsInLocation('hand', $player_id);
+      foreach ($hand as $card) {
+        if ($card['type_arg'] == 2 && $card['type'] == 3) {
+          return $card['location_arg'];
+        }
+      }
+    }
+  }
+
   function playerCanSlough($player_id, $trickSuit)
   {
     $hand = $this->cards->getCardsInLocation('hand', $player_id);
@@ -307,6 +319,7 @@ class heartsmihchelle extends Table
       self::notifyPlayer($player_id, 'newHand', '', array('cards' => $cards));
     }
     self::setGameStateValue('heartsBroken', 0);
+    $this->gamestate->changeActivePlayer($this->clubsOwnerId($players));
     $this->gamestate->nextState("");
   }
 
