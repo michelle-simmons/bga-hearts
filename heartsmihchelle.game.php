@@ -186,11 +186,6 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
-  function getCardUniqueId($suit, $value)
-  {
-    return ($suit - 1) * 13 + ($value - 2);
-  }
-
   function clubsOwnerId($players)
   {
     foreach ($players as $player_id => $player) {
@@ -324,9 +319,7 @@ class heartsmihchelle extends Table
       self::notifyPlayer($player_id, 'newHand', '', array('cards' => $cards));
     }
     self::setGameStateValue('heartsBroken', 0);
-    $twoOfClubs = $this->cards->getCard($this->getCardUniqueId(3, 2));
-    $startingPlayer = $twoOfClubs['location_arg'];
-    $this->gamestate->changeActivePlayer($startingPlayer);
+    $this->gamestate->changeActivePlayer($this->clubsOwnerId($players));
     $this->gamestate->nextState("");
   }
 
