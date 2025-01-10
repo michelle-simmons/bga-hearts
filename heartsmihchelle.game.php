@@ -326,7 +326,7 @@ class heartsmihchelle extends Table
     self::setGameStateValue('heartsBroken', 0);
     $twoOfClubs = $this->cards->getCard($this->getCardUniqueId(3, 2));
     $startingPlayer = $twoOfClubs['location_arg'];
-    $this->gamestate->changeActivePlayer($this->$startingPlayer);
+    $this->gamestate->changeActivePlayer($startingPlayer);
     $this->gamestate->nextState("");
   }
 
