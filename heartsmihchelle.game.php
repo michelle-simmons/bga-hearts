@@ -97,9 +97,7 @@ class heartsmihchelle extends Table
     //                   2 = give 3 cards to player opposite
     //                   3 = keep cards
     self::setGameStateInitialValue('currentHandType', 0);
-    // Set current trick suit to zero (= no trick suit)
     self::setGameStateInitialValue('trickSuit', 0);
-    // Mark if we already played hearts during this hand
     self::setGameStateInitialValue('heartsBroken', 0);
 
     // Create cards
@@ -188,12 +186,36 @@ class heartsmihchelle extends Table
     In this space, you can put any utility methods useful for your game logic
   */
 
+  function clubsOwnerId($players)
+  {
+    foreach ($players as $player_id => $player) {
+      $hand = $this->cards->getCardsInLocation('hand', $player_id);
+      foreach ($hand as $card) {
+        if ($card['type_arg'] == 2 && $card['type'] == 3) {
+          return $card['location_arg'];
+        }
+      }
+    }
+  }
+
   function playerCanSlough($player_id, $trickSuit)
   {
     $hand = $this->cards->getCardsInLocation('hand', $player_id);
 
     foreach ($hand as $card) {
       if ($card['type'] == $trickSuit) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function playerHasOnlyHearts($player_id)
+  {
+    $hand = $this->cards->getCardsInLocation('hand', $player_id);
+
+    foreach ($hand as $card) {
+      if ($card['type'] != 2) {
         return false;
       }
     }
@@ -218,8 +240,8 @@ class heartsmihchelle extends Table
     $currentTrickSuit = self::getGameStateValue('trickSuit');
     $currentCard = $this->cards->getCard($card_id);
 
-    if ($currentTrickSuit == 0) { // first hand
-      if ($currentCard['type'] == 2) { // card is a heart
+    if ($currentTrickSuit == 0) { // first card of trick
+      if ($currentCard['type'] == 2 && !$this->playerHasOnlyHearts($player_id) && !self::getGameStateValue('heartsBroken')) {
         throw new BgaUserException('cannot lead hearts!');
       }
       self::setGameStateValue('trickSuit', $currentCard['type']);
@@ -229,6 +251,10 @@ class heartsmihchelle extends Table
     if ($currentTrickSuit == $currentCard['type']) {
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } elseif ($this->playerCanSlough($player_id, $currentTrickSuit)) {
+      if ($currentCard['type'] == 2) {
+        self::setGameStateValue('heartsBroken', 1);
+      }
+
       $this->cards->moveCard($card_id, 'cardsontable', $player_id);
     } else {
       throw new BgaUserException('must play in suit!');
@@ -293,6 +319,7 @@ class heartsmihchelle extends Table
       self::notifyPlayer($player_id, 'newHand', '', array('cards' => $cards));
     }
     self::setGameStateValue('heartsBroken', 0);
+    $this->gamestate->changeActivePlayer($this->clubsOwnerId($players));
     $this->gamestate->nextState("");
   }
 
@@ -300,7 +327,7 @@ class heartsmihchelle extends Table
   {
     // New trick: active the player who wins the last trick, or the player who own the club-2 card
     // Reset trick suit to 0 (= no suit)
-    self::setGameStateInitialValue('trickSuit', 0);
+    self::setGameStateValue('trickSuit', 0);
     $this->gamestate->nextState("");
   }
 
